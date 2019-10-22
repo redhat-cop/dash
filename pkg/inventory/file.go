@@ -1,17 +1,23 @@
 package inventory
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
-func (r *Resource) ProcessFile(ns *string, f string, p string) error {
+type FileTemplate struct {
+	Path string `yaml:"path"`
+}
 
-	p = p + r.File
+func (ft *FileTemplate) Process(ns *string, r *Resource) error {
+
+	p := r.Prefix + "/" + ft.Path
 	abs, err := filepath.Abs(p)
 	if err != nil {
 		return err
 	}
 
 	// Copy file to tmpdir
-	err = copy(abs, f+string(r.Action))
+	err = copy(abs, r.Output+"/"+string(r.Action))
 	if err != nil {
 		return err
 	}

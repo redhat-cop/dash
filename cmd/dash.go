@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
 
 	inv "github.com/redhat-cop/dash/pkg/inventory"
 )
@@ -18,8 +20,14 @@ func main() {
 
 	var i inv.Inventory
 	var ns string
-	i.Load(invPath)
-	err := i.Process(&ns)
+
+	yamlFile, err := ioutil.ReadFile(invPath + "dash.yaml")
+	if err != nil {
+		log.Printf("yamlFile.Get err   #%v ", err)
+	}
+
+	i.Load(yamlFile, invPath)
+	err = i.Process(&ns)
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}

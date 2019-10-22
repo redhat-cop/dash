@@ -2,11 +2,11 @@ package inventory
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 
 	cp "github.com/redhat-cop/dash/pkg/copy"
 )
@@ -19,46 +19,41 @@ func (i *Inventory) Process(ns *string) error {
 
 	if i.ResourceGroups != nil {
 		for _, rg := range i.ResourceGroups {
-			err := rg.ProcessResourceGroup(i.Prefix, ns)
+			err := rg.Process(ns)
 			if err != nil {
 				return err
 			}
+
+			err = rg.Reconcile(ns, i.Args)
+			if err != nil {
+				return err
+			}
+
 		}
 	}
 
 	return nil
 }
 
-func (rg *ResourceGroup) ProcessResourceGroup(prefix string, ns *string) error {
+func (rg *ResourceGroup) Process(ns *string) error {
 
 	if rg.Namespace != "" {
 		ns = &rg.Namespace
 	}
 
-	file, err := ioutil.TempDir("", "dash")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer os.RemoveAll(file)
-
 	if rg.Resources != nil {
 		for _, r := range rg.Resources {
-			err := r.ProcessResource(ns, file, prefix)
+			err := r.Process(ns)
 			if err != nil {
 				return err
 			}
 		}
 	}
 
-	err = Reconcile(file, ns)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
-func (r *Resource) ProcessResource(ns *string, f string, p string) error {
+func (r *Resource) Process(ns *string) error {
 
 	if r.Namespace != "" {
 		ns = &r.Namespace
@@ -67,8 +62,13 @@ func (r *Resource) ProcessResource(ns *string, f string, p string) error {
 	log.Println("Resource: " + r.Name + ", Namespace: " + *ns)
 
 	// TODO: Determine the type of resource
-	if r.File != "" {
-		err := r.ProcessFile(ns, f, p)
+	if !reflect.DeepEqual(FileTemplate{}, r.File) {
+		err := r.File.Process(ns, r)
+		if err != nil {
+			return err
+		}
+	} else if !reflect.DeepEqual(HelmChart{}, r.Helm) {
+		err := r.Helm.Process(ns, r)
 		if err != nil {
 			return err
 		}
@@ -77,20 +77,23 @@ func (r *Resource) ProcessResource(ns *string, f string, p string) error {
 	return nil
 }
 
-func Reconcile(path string, ns *string) error {
+func (rg *ResourceGroup) Reconcile(ns *string, args []string) error {
 
-	p := path
-	abs, err := filepath.Abs(p)
+	apply_p := rg.Output + "/apply"
+	apply_abs, err := filepath.Abs(apply_p)
 	if err != nil {
 		return err
 	}
-	cmdArgs := []string{"apply", "-f", filepath.Clean(abs)}
+	cmdArgs := append(
+		[]string{"apply", "-f", filepath.Clean(apply_abs), "--recursive"},
+		args...,
+	)
 	if *ns != "" {
 		cmdArgs = append(cmdArgs, "-n", *ns)
 	}
 
 	cmd := exec.Command("kubectl", cmdArgs...)
-	fmt.Printf("Running command: %s\n", cmd.Args)
+	log.Printf("Running command: %s\n", cmd.Args)
 	stdoutStderr, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf("%s\n", stdoutStderr)

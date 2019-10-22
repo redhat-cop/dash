@@ -3,10 +3,11 @@ resource_groups:
   - name: Default Resources
     resources:
     - name: Raw Manifests
-      file: manifests/
+      file:
+        path: manifests/
     - name: Helm Charts
-      template: helm/
-      type: helm
+      helm:
+        chart: stable/redis
     - name: OpenShift Templates
       template: openshift-templates/
       params: openshift-template-params/
