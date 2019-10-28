@@ -12,12 +12,19 @@ args:
 resource_groups:
   - name: Default Resources
     resources:
-    - name: Raw Manifests
-      file:
-        path: manifests/
-    - name: Helm Charts
-      helm:
-        chart: stable/redis
+      - name: Raw Manifests
+        file:
+          path: manifests/
+      - name: Helm Charts
+        helm:
+          chart: stable/redis
+          valueFiles:
+          - redis-vars.yaml
+          values:
+            replicas: 3
+            labels:
+              something: foo
+              else: bar
 `
 
 var testStruct = Inventory{

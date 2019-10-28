@@ -8,6 +8,13 @@ resource_groups:
     - name: Helm Charts
       helm:
         chart: stable/redis
+        valueFiles:
+        - redis-vars.yaml
+        values:
+          replicas: 3
+          labels:
+            something: foo
+            else: bar
     - name: OpenShift Templates
       template: openshift-templates/
       params: openshift-template-params/

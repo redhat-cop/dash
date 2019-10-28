@@ -11,7 +11,7 @@ Dash helps to enable GitOps and Infrastructure as Code workflows in enterprises 
 Currently Dash supports the following templates:
 
 * FileTemplates - not really templates, just static resource definitions
-* HelmCharts
+* [HelmCharts](./docs/helm.md)
 
 ## Quickstart
 
