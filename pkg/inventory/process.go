@@ -11,6 +11,7 @@ import (
 	cp "github.com/redhat-cop/dash/pkg/copy"
 )
 
+// Process Inventory of ResourceGroups
 func (i *Inventory) Process(ns *string) error {
 
 	// create a temp directory for resources
@@ -47,6 +48,7 @@ func (i *Inventory) Process(ns *string) error {
 	return nil
 }
 
+// Process ResourceGroup of Resource
 func (rg *ResourceGroup) Process(ns *string) error {
 
 	if rg.Namespace != "" {
@@ -65,6 +67,7 @@ func (rg *ResourceGroup) Process(ns *string) error {
 	return nil
 }
 
+// Process a single resource
 func (r *Resource) Process(ns *string) error {
 
 	// create a temp directory for resources
@@ -103,15 +106,16 @@ func (r *Resource) Process(ns *string) error {
 	return nil
 }
 
+// Reconcile ensures all generated resources are applied via the appropriate verb
 func (rg *ResourceGroup) Reconcile(ns *string, args []string) error {
 
-	apply_p := rg.Output + "/apply"
-	apply_abs, err := filepath.Abs(apply_p)
+	applyP := rg.Output + "/apply"
+	applyAbs, err := filepath.Abs(applyP)
 	if err != nil {
 		return err
 	}
 	cmdArgs := append(
-		[]string{"apply", "-f", filepath.Clean(apply_abs), "--recursive"},
+		[]string{"apply", "-f", filepath.Clean(applyAbs), "--recursive"},
 		args...,
 	)
 	if *ns != "" {
@@ -139,7 +143,7 @@ func copy(src, dst string) error {
 
 	log.Printf("Source: %s, Dest: %s\n", src, dst)
 	if sourceFileStat.IsDir() {
-		err = cp.CopyDir(src, dst)
+		err = cp.Dir(src, dst)
 		if err != nil {
 			return err
 		}
@@ -149,7 +153,7 @@ func copy(src, dst string) error {
 	if !sourceFileStat.Mode().IsRegular() {
 		return fmt.Errorf("%s is not a regular file", src)
 	}
-	err = cp.CopyFile(src, dst)
+	err = cp.File(src, dst)
 	if err != nil {
 		return err
 	}

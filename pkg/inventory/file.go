@@ -4,10 +4,12 @@ import (
 	"path/filepath"
 )
 
+// FileTemplate static manifest file type
 type FileTemplate struct {
 	Path string `yaml:"path"`
 }
 
+// Process moves static file resources to Action directory
 func (ft *FileTemplate) Process(ns *string, r *Resource) error {
 
 	p := r.Prefix + "/" + ft.Path

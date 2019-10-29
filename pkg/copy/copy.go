@@ -20,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package copy
 
 import (
@@ -30,12 +31,12 @@ import (
 	"path/filepath"
 )
 
-// CopyFile copies the contents of the file named src to the file named
+// File copies the contents of the file named src to the file named
 // by dst. The file will be created if it does not already exist. If the
 // destination file exists, all it's contents will be replaced by the contents
 // of the source file. The file mode will be copied from the source and
 // the copied data is synced/flushed to stable storage.
-func CopyFile(src, dst string) (err error) {
+func File(src, dst string) (err error) {
 	in, err := os.Open(src)
 	if err != nil {
 		return
@@ -74,10 +75,10 @@ func CopyFile(src, dst string) (err error) {
 	return
 }
 
-// CopyDir recursively copies a directory tree, attempting to preserve permissions.
+// Dir recursively copies a directory tree, attempting to preserve permissions.
 // Source directory must exist, destination directory must *not* exist.
 // Symlinks are ignored and skipped.
-func CopyDir(src string, dst string) (err error) {
+func Dir(src string, dst string) (err error) {
 	src = filepath.Clean(src)
 	dst = filepath.Clean(dst)
 
@@ -112,7 +113,7 @@ func CopyDir(src string, dst string) (err error) {
 		dstPath := filepath.Join(dst, entry.Name())
 
 		if entry.IsDir() {
-			err = CopyDir(srcPath, dstPath)
+			err = Dir(srcPath, dstPath)
 			if err != nil {
 				return
 			}
@@ -122,7 +123,7 @@ func CopyDir(src string, dst string) (err error) {
 				continue
 			}
 
-			err = CopyFile(srcPath, dstPath)
+			err = File(srcPath, dstPath)
 			if err != nil {
 				return
 			}

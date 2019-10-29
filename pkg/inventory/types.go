@@ -8,14 +8,17 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// ACTION - default verb passed to `kubectl`
 const ACTION string = "apply"
 
+// DashMeta contains common attributes
 type DashMeta struct {
 	Prefix string `yaml:"prefix"`
 	Output string `yaml:"output"`
 	Action string `yaml:"action"`
 }
 
+// Inventory is the Dash entrypoint
 type Inventory struct {
 	DashMeta       `yaml:",inline"`
 	Version        int64           `yaml:"version"`
@@ -24,6 +27,7 @@ type Inventory struct {
 	Args           []string
 }
 
+// ResourceGroup contains one or more resources. Reconciliation happens here.
 type ResourceGroup struct {
 	DashMeta  `yaml:",inline"`
 	Name      string     `yaml:"name"`
@@ -31,6 +35,7 @@ type ResourceGroup struct {
 	Resources []Resource `yaml:"resources"`
 }
 
+// Resource contains a template
 type Resource struct {
 	DashMeta          `yaml:",inline"`
 	Name              string            `yaml:"name"`
@@ -40,10 +45,12 @@ type Resource struct {
 	OpenShiftTemplate OpenShiftTemplate `yaml:"openshiftTemplate"`
 }
 
+// Template is anything that can be preprocessed
 type Template interface {
 	Process(ns *string, r *Resource) error
 }
 
+// Load marshals a dash.yaml into an Inventory
 func (i *Inventory) Load(yf []byte, pre string) *Inventory {
 
 	file, err := ioutil.TempDir("", "dash")

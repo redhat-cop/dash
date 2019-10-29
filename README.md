@@ -13,20 +13,24 @@ Currently Dash supports the following templates:
 * FileTemplates - not really templates, just static resource definitions
 * [HelmCharts](./docs/helm.md)
 
+## Installation
+
+Those with a go environment can install simply by running
+
+```
+go get github.com/redhat-cop/dash
+```
+
+If you want a stable release, we recommend downloading the appropriate binary from our [releases](https://github.com/redhat-cop/dash/releases) page.
+
 ## Quickstart
 
 To run, first log into your kubernetes cluster, and:
 
 ```
-export GO111MODULE=on
-go mod vendor
-go run cmd/dash.go -i examples/default/
+dash -i examples/default/
 ```
 
-## Running Tests
+## Contribute
 
-There is some automated test coverage in the libraries. You can run all tests with:
-
-```
-go test ./...
-```
+We would love for you to contribut to this project! For more information on how to get started, see our [dev guide](./docs/dev_guide.md).
