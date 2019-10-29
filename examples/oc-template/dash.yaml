@@ -1,0 +1,9 @@
+version: 3.0
+resource_groups:
+  - name: Default Resources
+    resources:
+    - name: OpenShift Templates
+      openshiftTemplate:
+        template: app-stack.yaml
+        params:
+          APP_NAME: dash-nginx

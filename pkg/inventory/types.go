@@ -32,11 +32,12 @@ type ResourceGroup struct {
 }
 
 type Resource struct {
-	DashMeta  `yaml:",inline"`
-	Name      string       `yaml:"name"`
-	Namespace string       `yaml:"namespace"`
-	File      FileTemplate `yaml:"file"`
-	Helm      HelmChart    `yaml:"helm"`
+	DashMeta          `yaml:",inline"`
+	Name              string            `yaml:"name"`
+	Namespace         string            `yaml:"namespace"`
+	File              FileTemplate      `yaml:"file"`
+	Helm              HelmChart         `yaml:"helm"`
+	OpenShiftTemplate OpenShiftTemplate `yaml:"openshiftTemplate"`
 }
 
 type Template interface {

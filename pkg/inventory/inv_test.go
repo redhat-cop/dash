@@ -25,6 +25,11 @@ resource_groups:
             labels:
               something: foo
               else: bar
+      - name: OpenShift Templates
+        openshiftTemplate:
+          template: app-stack.yaml
+          params:
+            APP_NAME: dash-nginx
 `
 
 var testStruct = Inventory{

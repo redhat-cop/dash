@@ -13,6 +13,18 @@ import (
 
 func (i *Inventory) Process(ns *string) error {
 
+	// create a temp directory for resources
+	output_dir := filepath.Clean(i.Output)
+	if _, err := os.Stat(output_dir); os.IsNotExist(err) {
+		err = os.Mkdir(output_dir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+	defer func() {
+		os.Remove("output_dir")
+	}()
+
 	if i.Namespace != "" {
 		ns = &i.Namespace
 	}
@@ -55,6 +67,15 @@ func (rg *ResourceGroup) Process(ns *string) error {
 
 func (r *Resource) Process(ns *string) error {
 
+	// create a temp directory for resources
+	output_dir := filepath.Clean(r.Output + "/" + r.Action)
+	if _, err := os.Stat(output_dir); os.IsNotExist(err) {
+		err = os.Mkdir(output_dir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+
 	if r.Namespace != "" {
 		ns = &r.Namespace
 	}
@@ -69,6 +90,11 @@ func (r *Resource) Process(ns *string) error {
 		}
 	} else if !reflect.DeepEqual(HelmChart{}, r.Helm) {
 		err := r.Helm.Process(ns, r)
+		if err != nil {
+			return err
+		}
+	} else if !reflect.DeepEqual(OpenShiftTemplate{}, r.Helm) {
+		err := r.OpenShiftTemplate.Process(ns, r)
 		if err != nil {
 			return err
 		}

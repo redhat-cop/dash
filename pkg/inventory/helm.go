@@ -15,7 +15,7 @@ import (
 
 type HelmChart struct {
 	Chart      string      `yaml:"chart"`
-	Url        string      `yaml:"url"`
+	URL        string      `yaml:"url"`
 	Values     interface{} `yaml:"values"`
 	ValueFiles []string    `yaml:"valueFiles"`
 }

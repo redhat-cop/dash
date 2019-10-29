@@ -16,5 +16,7 @@ resource_groups:
             something: foo
             else: bar
     - name: OpenShift Templates
-      template: openshift-templates/
-      params: openshift-template-params/
+      openshiftTemplate:
+        template: app-stack.yaml
+        params:
+          APP_NAME: dash-nginx
