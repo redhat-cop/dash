@@ -78,7 +78,7 @@ clean:
 	rm $(EXECUTABLE) || true
 	rm -rf bin/
 
-test: clean dep lint
+test: clean dep
 	go test ./...
 
 lint:
