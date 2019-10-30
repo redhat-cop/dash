@@ -12,6 +12,7 @@ jobs:
       with:
         go-version: 1.12
       id: go
+    - uses: actions-contrib/golangci-lint@v0.1.0
 
     - name: Start Kubernetes
       uses: engineerd/setup-kind@v0.1.0
@@ -20,13 +21,13 @@ jobs:
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
         kubectl cluster-info
-        kubectl get pods -n kube-system      
-    
+        kubectl get pods -n kube-system
+
     - name: Install oc
       run: |
         OC_BINARY_URL=http://mirror.openshift.com/pub/openshift-v4/clients/oc/4.2/linux/oc.tar.gz
         sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
-    
+
     - name: Initialize Helm
       run: helm init --client-only
 
@@ -35,7 +36,7 @@ jobs:
 
     - name: Get dependencies
       run: make
-        
+
     - name: Build
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
