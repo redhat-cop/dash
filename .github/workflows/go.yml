@@ -14,7 +14,8 @@ jobs:
       id: go
 
     - name: Start Kubernetes
-    - uses: engineerd/setup-kind@v0.1.0
+      uses: engineerd/setup-kind@v0.1.0
+
     - name: Testing Kube
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
