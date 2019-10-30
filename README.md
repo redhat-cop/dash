@@ -1,5 +1,7 @@
 # Dash Prototype
 
+[![Actions Status](https://github.com/redhat-cop/dash/workflows/Go/badge.svg)](https://github.com/redhat-cop/dash/actions)
+
 Dash is an automation framework for Kubernetes. The aim is to combine the power of [Kubernetes declarative management](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/) and popular templating engines to provide a full-featured automation strategy for Kubernetes cluster and application management.
 
 Dash helps to enable GitOps and Infrastructure as Code workflows in enterprises with complex use cases.
