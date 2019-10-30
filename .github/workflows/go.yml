@@ -16,6 +16,11 @@ jobs:
     - name: Minikube (Single node Kubernetes) Action
       uses: opsgang/ga-setup-minikube@v0.1.1
     
+    - name: Install oc
+      run: |
+        OC_BINARY_URL=http://mirror.openshift.com/pub/openshift-v4/clients/oc/4.2/linux/oc.tar.gz
+        sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
+    
     - name: Initialize Helm
       run: helm init --client-only
 
