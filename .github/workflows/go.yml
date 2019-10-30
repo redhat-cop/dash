@@ -13,11 +13,13 @@ jobs:
         go-version: 1.12
       id: go
 
-    - name: Minikube (Single node Kubernetes) Action
-      uses: opsgang/ga-setup-minikube@v0.1.1
-      
-    - name: Test minikube
-      run: kubectl get nodes
+    - name: Start Kubernetes
+    - uses: engineerd/setup-kind@v0.1.0
+    - name: Testing Kube
+      run: |
+        export KUBECONFIG="$(kind get kubeconfig-path)"
+        kubectl cluster-info
+        kubectl get pods -n kube-system      
     
     - name: Install oc
       run: |
