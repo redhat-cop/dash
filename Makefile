@@ -78,7 +78,10 @@ clean:
 	rm $(EXECUTABLE) || true
 	rm -rf bin/
 
-test: clean dep
+test: clean dep lint
 	go test ./...
 
-.PHONY: clean release dep install test
+lint:
+	golangci-lint run
+
+.PHONY: clean release dep install test lint
