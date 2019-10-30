@@ -15,6 +15,7 @@ jobs:
 
     - name: Minikube (Single node Kubernetes) Action
       uses: opsgang/ga-setup-minikube@v0.1.1
+      run: kubectl get nodes
     
     - name: Install oc
       run: |
