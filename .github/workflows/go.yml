@@ -1,0 +1,42 @@
+name: Go
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.12
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.12
+      id: go
+
+    - name: Start Kubernetes
+      uses: engineerd/setup-kind@v0.1.0
+
+    - name: Testing Kube
+      run: |
+        export KUBECONFIG="$(kind get kubeconfig-path)"
+        kubectl cluster-info
+        kubectl get pods -n kube-system
+
+    - name: Install oc
+      run: |
+        OC_BINARY_URL=http://mirror.openshift.com/pub/openshift-v4/clients/oc/4.2/linux/oc.tar.gz
+        sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
+
+    - name: Initialize Helm
+      run: helm init --client-only
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Get dependencies
+      run: make
+
+    - name: Build
+      run: |
+        export KUBECONFIG="$(kind get kubeconfig-path)"
+        make test

@@ -81,4 +81,7 @@ clean:
 test: clean dep
 	go test ./...
 
-.PHONY: clean release dep install test
+lint:
+	golangci-lint run
+
+.PHONY: clean release dep install test lint
