@@ -25,11 +25,32 @@ resource_groups:
             labels:
               something: foo
               else: bar
-      - name: OpenShift Templates
-        openshiftTemplate:
-          template: app-stack.yaml
-          params:
-            APP_NAME: dash-nginx
+  - name: OpenShift Templates
+    resources:
+    - name: OpenShift Templates
+      openshiftTemplate:
+        template: templates/app-stack.yaml
+        params:
+          APP_NAME: single-file-tpl
+    - name: Directory of Templates
+      openshiftTemplate:
+        template: templates/
+        params:
+          APP_NAME: tpl-dir-test
+        paramFiles:
+        - template-params/app-stack
+    - name: Directory of templates and params
+      openshiftTemplate:
+        template: templates/
+        params:
+          SOME_PARAM: ignore
+        paramDir: template-params/
+    - name: One template directory of params
+      openshiftTemplate:
+        template: templates/app-stack.yaml
+        params:
+          SOME_PARAM: ignore
+        paramDir: template-params/
 `
 
 var testStruct = Inventory{
